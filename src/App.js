@@ -9,10 +9,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route path="/signIn" excat element={<SignInPage />} />
         <Route path="/add-listing" excat element={<AddListing />} />
         <Route path="/search" excat element={<Search />} />
+        <Route path="/" excat element={<Home />} />
       </Routes>
     </Router>
   );

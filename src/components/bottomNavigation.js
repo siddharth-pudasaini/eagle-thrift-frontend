@@ -1,4 +1,4 @@
-import { useState, useRef,useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
@@ -9,43 +9,43 @@ import AddCircleIcon from "@mui/icons-material/AddCircleSharp";
 import Paper from "@mui/material/Paper";
 
 export default function FixedBottomNavigation() {
-   const [value, setValue] = useState(0);
-   const ref = useRef(null);
-   const navigate = useNavigate();
-   const location = useLocation();
+  const [value, setValue] = useState(0);
+  const ref = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-   useEffect(() => {
-     switch (location.pathname) {
-       case "/":
-         setValue(0);
-         break;
-       case "/add-listing":
-         setValue(1);
-         break;
-       case "/search":
-         setValue(2);
-         break;
-       default:
-         setValue(0);
-     }
-   }, [location.pathname]);
+  useEffect(() => {
+    switch (location.pathname) {
+      case "/":
+        setValue(0);
+        break;
+      case "/add-listing":
+        setValue(1);
+        break;
+      case "/search":
+        setValue(2);
+        break;
+      default:
+        setValue(0);
+    }
+  }, [location.pathname]);
 
-   const handleNavigationChange = (event, newValue) => {
-     setValue(newValue);
-     switch (newValue) {
-       case 0:
-         navigate("/");
-         break;
-       case 1:
-         navigate("/add-listing");
-         break;
-       case 2:
-         navigate("/search");
-         break;
-       default:
-         navigate("/");
-     }
-   };
+  const handleNavigationChange = (event, newValue) => {
+    setValue(newValue);
+    switch (newValue) {
+      case 0:
+        navigate("/");
+        break;
+      case 1:
+        navigate("/add-listing");
+        break;
+      case 2:
+        navigate("/search");
+        break;
+      default:
+        navigate("/");
+    }
+  };
 
   return (
     <Paper

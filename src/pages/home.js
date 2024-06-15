@@ -4,8 +4,8 @@ import SimpleBottomNavigation from "../components/bottomNavigation";
 const Home = () => {
   return (
     <div>
-      <Navbar></Navbar>
-      
+      <Navbar />
+
       <SimpleBottomNavigation />
     </div>
   );
