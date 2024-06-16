@@ -13,6 +13,9 @@ import {
 } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+
+import AlertDialog from "./alertDialog";
 
 const style = {
   position: "absolute",
@@ -32,10 +35,22 @@ export default function UploadForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [alertOpen,setAlertOpen]=useState(false)
+  const [alertMessage,setAlertMessage]=useState("")
 
   const handleFileChange = (event) => {
     const newFiles = Array.from(event.target.files);
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    const lastFile = newFiles[newFiles.length - 1];
+    const maxSizeInBytes = 1 * 1024; // 1 MB in bytes
+
+    if (lastFile.size > maxSizeInBytes) {
+      setAlertOpen(true)
+      setAlertMessage("File size exeeds 1MB limit")
+    } else {
+      setFiles((prevFiles) => [...prevFiles, lastFile]);
+    }
+
+    event.target.value = null; // Reset the input value to allow the same file to be uploaded again
   };
 
   const handleRemoveFile = (index) => {
@@ -64,6 +79,11 @@ export default function UploadForm() {
     // Handle form submission logic here
     console.log({ title, description, price, files });
   };
+
+  const handleAlertClose=()=>{
+    setAlertOpen(false)
+    setAlertMessage("")
+  }
 
   return (
     <Box sx={{ p: 3 }}>
@@ -164,9 +184,23 @@ export default function UploadForm() {
         </Button>
       </Box>
       <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
+        <Box
+          sx={{ ...style, width: "auto", maxWidth: "90%", maxHeight: "90%" }}
+        >
+          <IconButton
+            sx={{
+              position: "absolute",
+              top: 5,
+              right: 5,
+              color: "white",
+              bgcolor: "rgba(0, 0, 0, 0.5)",
+            }}
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </IconButton>
           {selectedFile && (
-            <Box>
+            <Box sx={{ textAlign: "center" }}>
               <CardMedia
                 component={
                   selectedFile.type.startsWith("image") ? "img" : "video"
@@ -180,6 +214,7 @@ export default function UploadForm() {
           )}
         </Box>
       </Modal>
+      <AlertDialog open={alertOpen} message={alertMessage} onClose={handleAlertClose}/>
     </Box>
   );
 }

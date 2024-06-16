@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
@@ -9,21 +9,20 @@ import AddCircleIcon from "@mui/icons-material/AddCircleSharp";
 import Paper from "@mui/material/Paper";
 
 export default function FixedBottomNavigation() {
-  const [value, setValue] = useState(0);
-  const ref = useRef(null);
+  const [value, setValue] = useState();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     switch (location.pathname) {
-      case "/":
-        setValue(0);
-        break;
       case "/add-listing":
         setValue(1);
         break;
       case "/search":
         setValue(2);
+        break;
+      case "/":
+        setValue(0);
         break;
       default:
         setValue(0);
@@ -49,7 +48,6 @@ export default function FixedBottomNavigation() {
 
   return (
     <Paper
-      ref={ref}
       elevation={20}
       className="bottomNav"
       å
@@ -57,6 +55,7 @@ export default function FixedBottomNavigation() {
         position: "fixed",
         bottom: 0,
         width: "100%",
+        zIndex: 1000, // Ensure it stays on top
       }}
     >
       <BottomNavigation

@@ -19,6 +19,7 @@ export default function SimplePersistentDrawer() {
     setOpen(!open);
   };
 
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -54,7 +55,7 @@ export default function SimplePersistentDrawer() {
             p: 1,
           }}
         >
-          <Typography variant="h6" sx={{ ml: 2 }}>
+          <Typography variant="h6" sx={{ ml: 2, color:'primary.main' ,fontWeight:"semiBold"}}>
             Messages
           </Typography>
           <IconButton onClick={toggleDrawer} sx={{ color: "red" }}>
