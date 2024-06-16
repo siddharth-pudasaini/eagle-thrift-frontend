@@ -35,8 +35,8 @@ export default function UploadForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [alertOpen,setAlertOpen]=useState(false)
-  const [alertMessage,setAlertMessage]=useState("")
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const handleFileChange = (event) => {
     const newFiles = Array.from(event.target.files);
@@ -44,8 +44,8 @@ export default function UploadForm() {
     const maxSizeInBytes = 1 * 1024; // 1 MB in bytes
 
     if (lastFile.size > maxSizeInBytes) {
-      setAlertOpen(true)
-      setAlertMessage("File size exeeds 1MB limit")
+      setAlertOpen(true);
+      setAlertMessage("File size exeeds 1MB limit");
     } else {
       setFiles((prevFiles) => [...prevFiles, lastFile]);
     }
@@ -80,10 +80,10 @@ export default function UploadForm() {
     console.log({ title, description, price, files });
   };
 
-  const handleAlertClose=()=>{
-    setAlertOpen(false)
-    setAlertMessage("")
-  }
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+    setAlertMessage("");
+  };
 
   return (
     <Box sx={{ p: 3 }}>
@@ -214,7 +214,12 @@ export default function UploadForm() {
           )}
         </Box>
       </Modal>
-      <AlertDialog open={alertOpen} message={alertMessage} onClose={handleAlertClose}/>
+      <AlertDialog
+        open={alertOpen}
+        message={alertMessage}
+        title="File Size Error"
+        onClose={handleAlertClose}
+      />
     </Box>
   );
 }

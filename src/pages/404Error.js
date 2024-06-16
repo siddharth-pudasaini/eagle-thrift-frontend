@@ -9,7 +9,7 @@ import Container from '@mui/material/Container';
 const NotFound=()=>{
     return (
       <Container maxWidth='sm'>
-        <Alert severity="error">404 Page Not Found</Alert>
+        <Alert severity="error">Page Not Found</Alert>
       </Container>
     );
 }

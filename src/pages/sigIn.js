@@ -5,7 +5,6 @@ import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
@@ -21,9 +20,9 @@ export default function SignIn() {
   });
 
   const handleTextChange = (event) => {
-    if (event.target.name == "email") {
+    if (event.target.name === "email") {
       setEmailError({ status: false, message: "" });
-    } else if (event.target.name == "password") {
+    } else if (event.target.name === "password") {
       setPasswordError({ status: false, message: "" });
     }
   };
@@ -42,10 +41,10 @@ export default function SignIn() {
       password: password,
     });
 
-    if (email.length == 0) {
+    if (email.length === 0) {
       setEmailError({ status: true, message: "Email is required" });
     }
-    if (password.length == 0) {
+    if (password.length === 0) {
       setPasswordError({ status: true, message: "Password is required" });
     }
   };
@@ -61,7 +60,7 @@ export default function SignIn() {
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "primary.main", height:"12rem", width:"12rem"}}>
-          <img src="./logo192.png"></img>
+          <img src="./logo192.png" alt="Eagle Thrift Logo"></img>
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign in
@@ -108,7 +107,7 @@ export default function SignIn() {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2" color="secondary.main">
+              <Link href="/signUp" variant="body2" color="secondary.main">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

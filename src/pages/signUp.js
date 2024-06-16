@@ -79,6 +79,7 @@ export default function SignUp() {
       <Box
         sx={{
           marginTop: 8,
+          marginBottom:10,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
