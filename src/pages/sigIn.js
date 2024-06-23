@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -12,7 +12,11 @@ import { useState } from "react";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
+import { AuthContext } from "../providers/AuthProvider";
+
 export default function SignIn() {
+  const { authToken, isAuthenticated, login, logout } = useContext(AuthContext);
+
   const [emailError, setEmailError] = useState({ status: false, message: "" });
   const [passwordError, setPasswordError] = useState({
     status: false,
@@ -30,7 +34,6 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log(data);
     let email = data.get("email");
     let password = data.get("password");
 
@@ -43,9 +46,10 @@ export default function SignIn() {
 
     if (email.length === 0) {
       setEmailError({ status: true, message: "Email is required" });
-    }
-    if (password.length === 0) {
+    } else if (password.length === 0) {
       setPasswordError({ status: true, message: "Password is required" });
+    } else {
+      login("This is a token");
     }
   };
 
@@ -59,7 +63,14 @@ export default function SignIn() {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "primary.main", height:"12rem", width:"12rem"}}>
+        <Avatar
+          sx={{
+            m: 1,
+            bgcolor: "primary.main",
+            height: "12rem",
+            width: "12rem",
+          }}
+        >
           <img src="./logo192.png" alt="Eagle Thrift Logo"></img>
         </Avatar>
         <Typography component="h1" variant="h5">

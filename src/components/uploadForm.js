@@ -41,7 +41,7 @@ export default function UploadForm() {
   const handleFileChange = (event) => {
     const newFiles = Array.from(event.target.files);
     const lastFile = newFiles[newFiles.length - 1];
-    const maxSizeInBytes = 1 * 1024; // 1 MB in bytes
+    const maxSizeInBytes = 1 * 1024 * 1024; // 1 MB in bytes
 
     if (lastFile.size > maxSizeInBytes) {
       setAlertOpen(true);
@@ -87,9 +87,7 @@ export default function UploadForm() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h5" gutterBottom>
-        Create Listing
-      </Typography>
+      <h3 gutterBottom>Create Listing</h3>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField

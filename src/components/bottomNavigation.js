@@ -50,12 +50,12 @@ export default function FixedBottomNavigation() {
     <Paper
       elevation={20}
       className="bottomNav"
-      å
       sx={{
         position: "fixed",
-        bottom: 0,
+        bottom:0,
         width: "100%",
-        zIndex: 1000, // Ensure it stays on top
+        zIndex: 10,
+        marginTop: "1%",
       }}
     >
       <BottomNavigation
@@ -64,6 +64,7 @@ export default function FixedBottomNavigation() {
         onChange={handleNavigationChange}
         sx={{
           padding: 5,
+
           "& .MuiBottomNavigationAction-root": {
             fontSize: "1rem", // Change the font size here
             fontWeight: "bold",

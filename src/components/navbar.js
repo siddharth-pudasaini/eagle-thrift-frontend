@@ -15,12 +15,13 @@ export default function Navbar() {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between", // To space the items horizontally
+        minHeight: "8vh",
       }}
     >
-      <Typography variant="h6" className="title">
+      <Typography variant="h5" className="title">
         Eagle Thrift
       </Typography>
-      <SimplePersistentDrawer/>
+      <SimplePersistentDrawer />
     </AppBar>
   );
 }

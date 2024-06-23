@@ -6,22 +6,27 @@ import NotFound from "./pages/404Error";
 import SignUp from "./pages/signUp";
 
 import { AuthProvider } from "./providers/AuthProvider";
+import { UIProvider } from "./providers/UIprovider";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import "./index.css";
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/signIn" excat element={<SignInPage />} />
-          <Route path="/signUp" element={<SignUp />} />
-          <Route path="/add-listing" excat element={<AddListing />} />
-          <Route path="/search" excat element={<Search />} />
-          <Route path="/" excat element={<Home />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
+      <UIProvider>
+        <Router>
+          <Routes>
+            <Route path="/signIn" excat element={<SignInPage />} />
+            <Route path="/signUp" element={<SignUp />} />
+            <Route path="/add-listing" excat element={<AddListing />} />
+            <Route path="/search" excat element={<Search />} />
+            <Route path="/" excat element={<Home />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </UIProvider>
     </AuthProvider>
   );
 }
