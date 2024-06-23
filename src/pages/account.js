@@ -30,13 +30,16 @@ export default function AccountInfo() {
         flexDirection: 'column',
         alignItems: 'center',
       }}>
+        <Typography component="h1" variant="h5">
+          Account Information
+        </Typography>
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main', width: 100, height: 100 }}>
           {/* Avatar Image Source */}
           <img src="/path/to/profile.jpg" alt="Profile" style={{ width: '100%' }} />
         </Avatar>
-        <Typography component="h1" variant="h5">
-          Account Information
-        </Typography>
+        <Button variant="outlined" color="primary" sx={{ mt: 1 }}>
+          Edit Profile Image
+        </Button>
         <Box sx={{ mt: 2, width: '100%' }}>
           <TextField
             margin="normal"
