@@ -1,15 +1,18 @@
 import Navbar from "../components/navbar";
 import SimpleBottomNavigation from "../components/bottomNavigation";
 
-import BasicChips from "../components/categoriesSlide";
-import { Typography } from "@mui/material";
+import Filters from "../components/filters";
+import ScrollToTop from "../components/scrollButton";
+
+import ContentArea from "../components/contentArea";
 
 const Home = () => {
   return (
     <>
       <Navbar />
-      <BasicChips />
-      
+      <Filters />
+      <ContentArea />
+      <ScrollToTop />
       <SimpleBottomNavigation />
     </>
   );

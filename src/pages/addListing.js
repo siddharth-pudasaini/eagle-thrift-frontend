@@ -8,29 +8,36 @@ import { AuthContext } from "../providers/AuthProvider";
 import AlertDialog from "../components/alertDialog";
 import { useNavigate } from "react-router-dom";
 
+import ContentArea from "../components/contentArea";
+import ScrollToTop from "../components/scrollButton";
+
 const AddListing = () => {
   const { authToken, isAuthenticated, login, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleAlertClose=()=>{
-    navigate('/signIn')
-  }
+  const handleAlertClose = () => {
+    navigate("/signIn");
+  };
 
   return (
     <React.Fragment>
       <Navbar />
-      <Box sx={{ pb: 10 }}>
-        {isAuthenticated && <UploadForm />}
-        {!isAuthenticated && (
-          <AlertDialog
-            open
-            message="Please login to add listing"
-            onClose={handleAlertClose}
-            title="Authentication Error"
-          />
-        )}
-      </Box>
+      <ContentArea>
+        <Box sx={{ pb: 10 }}>
+          {isAuthenticated && <UploadForm />}
+          {!isAuthenticated && (
+            <AlertDialog
+              open
+              message="Please login to add listing"
+              onClose={handleAlertClose}
+              title="Authentication Error"
+            />
+          )}
+        </Box>
+      </ContentArea>
+
       <SimpleBottomNavigation />
+      <ScrollToTop />
     </React.Fragment>
   );
 };

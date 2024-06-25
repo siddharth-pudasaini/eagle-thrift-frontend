@@ -1,37 +1,43 @@
 import React from "react";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  Typography,
+  CardActionArea,
+} from "@mui/material";
+import Slider from "react-slick";
 
-const MediaCard = ({ title, subheader, image, description }) => {
+const MediaCard = ({ title, subheader, media, description }) => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
   return (
-    <Card style={{ maxWidth: "30vw", margin: "1rem" }}>
-      <CardHeader title={title} subheader={subheader} />
-      <CardMedia
-        component="img"
-        height="50%"
-        image={image}
-        alt={title}
-        style={{ objectFit: "contain" }}
-      />
-      <CardContent>
-        <Typography
-          variant="body2"
-          sx={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            maxWidth: "100%",
-          }}
-        >
-          {description}
-        </Typography>
-      </CardContent>
+    <Card sx={{ maxWidth: "30vw", margin: "1rem", height: "500px" }}>
+      <CardActionArea href="/item-link" style={{ height: "100%" }}>
+        <CardHeader title={title} subheader={subheader} />
+        <Slider {...settings} style={{ height: "50%" }}>
+          {media.map((item, index) => (
+            <div key={index}>
+              <img
+                src={item.image}
+                alt={item.alt || title}
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              />
+            </div>
+          ))}
+        </Slider>
+        <CardContent>
+          <Typography variant="body2" sx={{ overflow: "auto", height: "20%" }}>
+            {description}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 };

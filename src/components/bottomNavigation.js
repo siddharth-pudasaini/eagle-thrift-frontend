@@ -51,7 +51,7 @@ export default function FixedBottomNavigation() {
       elevation={20}
       className="bottomNav"
       sx={{
-        position: "fixed",
+        position: "sticky",
         bottom:0,
         width: "100%",
         zIndex: 10,
