@@ -5,24 +5,28 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import HomeIcon from "@mui/icons-material/HomeSharp";
 import SearchIcon from "@mui/icons-material/SearchSharp";
 import AddCircleIcon from "@mui/icons-material/AddCircleSharp";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 import Paper from "@mui/material/Paper";
 
 export default function FixedBottomNavigation() {
-  const [value, setValue] = useState();
+  const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     switch (location.pathname) {
+      case "/":
+        setValue(0);
+        break;
       case "/add-listing":
         setValue(1);
         break;
       case "/search":
         setValue(2);
         break;
-      case "/":
-        setValue(0);
+      case "/account-info":
+        setValue(3);
         break;
       default:
         setValue(0);
@@ -41,6 +45,9 @@ export default function FixedBottomNavigation() {
       case 2:
         navigate("/search");
         break;
+      case 3:
+        navigate("/account-info");
+        break;
       default:
         navigate("/");
     }
@@ -52,7 +59,7 @@ export default function FixedBottomNavigation() {
       className="bottomNav"
       sx={{
         position: "sticky",
-        bottom:0,
+        bottom: 0,
         width: "100%",
         zIndex: 10,
         marginTop: "1%",
@@ -64,9 +71,8 @@ export default function FixedBottomNavigation() {
         onChange={handleNavigationChange}
         sx={{
           padding: 5,
-
           "& .MuiBottomNavigationAction-root": {
-            fontSize: "1rem", // Change the font size here
+            fontSize: "1rem",
             fontWeight: "bold",
             color: "black",
           },
@@ -86,6 +92,10 @@ export default function FixedBottomNavigation() {
         <BottomNavigationAction
           label="Search"
           icon={<SearchIcon sx={{ fontSize: "1.5rem" }} />}
+        />
+        <BottomNavigationAction
+          label="Account"
+          icon={<AccountCircleIcon sx={{ fontSize: "1.5rem" }} />}
         />
       </BottomNavigation>
     </Paper>
