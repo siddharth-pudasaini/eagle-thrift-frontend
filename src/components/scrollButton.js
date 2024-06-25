@@ -6,8 +6,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 const ScrollToTop = () => {
   const [showScroll, setShowScroll] = useState(false);
-const isFullScreen = useMediaQuery("(max-width: 600px)");
-
 
   useEffect(() => {
     const handleScroll = () => {

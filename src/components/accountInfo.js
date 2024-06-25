@@ -63,7 +63,7 @@ export default function AccountInfo() {
   };
 
   return (
-    <Container component="main" sx={{ mt: 4 }}>
+    <Container component="main" sx={{ mt: "3vh", mb: "3vh" }}>
       <Typography
         variant="h4"
         component="div"
@@ -165,14 +165,47 @@ export default function AccountInfo() {
             Update Info
           </Button>
         ) : null}
-        <Button variant="outlined" color="primary" onClick={handleEditToggle}>
+        <Button
+          variant="outlined"
+          color={isEditing ? "error" : "primary"}
+          onClick={handleEditToggle}
+        >
           {isEditing ? "Cancel" : "Edit"}
         </Button>
       </Box>
       <Typography variant="h6" component="div" sx={{ mt: 4, mb: 2 }}>
         My Listings
       </Typography>
-      <Box sx={{ display: "flex", overflowX: "scroll", padding: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          overflowX: "scroll",
+          padding: 2, // General style for the whole scrollbar area
+          "&::-webkit-scrollbar": {
+            width: "10px", // Width of the vertical scrollbar
+            height: "8px", // Height of the horizontal scrollbar
+          },
+
+          // Style for the track of the scrollbar
+          "&::-webkit-scrollbar-track": {
+            background: "#f1f1f1", // Light grey background for the track
+            borderRadius: "10px", // Rounded corners for the track
+          },
+
+          // Style for the thumb of the scrollbar (draggable part)
+          "&::-webkit-scrollbar-thumb": {
+            background: "#888", // Darker shade for the thumb for contrast
+            borderRadius: "10px", // Rounded corners for the thumb
+            border: "2px solid transparent", // Optional: Adding border can make thumb stand out
+            backgroundClip: "content-box", // Ensures the border does not take space inside the thumb
+          },
+
+          // Optional: Style for the thumb on hover or active state
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "#555", // Slightly darker on hover for visual feedback
+          },
+        }}
+      >
         {Array(5)
           .fill("/path/to/listing/image.jpg")
           .map((src, index) => (

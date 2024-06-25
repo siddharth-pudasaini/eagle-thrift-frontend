@@ -86,7 +86,7 @@ export default function UploadForm() {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3}}>
       <h3 gutterBottom>Create Listing</h3>
       <Grid container spacing={2}>
         <Grid item xs={12}>

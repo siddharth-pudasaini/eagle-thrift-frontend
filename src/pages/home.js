@@ -6,12 +6,16 @@ import ScrollToTop from "../components/scrollButton";
 
 import ContentArea from "../components/contentArea";
 
+import ListingsContainer from "../components/listingsContainer";
+
 const Home = () => {
   return (
     <>
       <Navbar />
       <Filters />
-      <ContentArea />
+      <ContentArea>
+        <ListingsContainer  />
+      </ContentArea>
       <ScrollToTop />
       <SimpleBottomNavigation />
     </>
