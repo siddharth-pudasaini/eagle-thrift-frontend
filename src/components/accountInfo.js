@@ -12,6 +12,9 @@ import {
   Box,
 } from "@mui/material";
 
+import MediaCard from "./mediaCard";
+
+
 export default function AccountInfo() {
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useState({
@@ -206,8 +209,8 @@ export default function AccountInfo() {
           },
         }}
       >
-        {Array(5)
-          .fill("/path/to/listing/image.jpg")
+        {Array(100)
+          .fill("https://picsum.photos/400")
           .map((src, index) => (
             <img
               key={index}

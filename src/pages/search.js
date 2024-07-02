@@ -20,6 +20,7 @@ const Search = () => {
       </Box>
 
       <ContentArea />
+      <ScrollToTop/>
       <SimpleBottomNavigation />
     </React.Fragment>
   );
