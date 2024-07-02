@@ -10,7 +10,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Paper from "@mui/material/Paper";
 
 export default function FixedBottomNavigation() {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState();
   const navigate = useNavigate();
   const location = useLocation();
 

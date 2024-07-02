@@ -9,7 +9,7 @@ import AccountInfo from "./pages/account";
 import { AuthProvider } from "./providers/AuthProvider";
 import { UIProvider } from "./providers/UIprovider";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./index.css";
 
