@@ -12,7 +12,7 @@ import ContentArea from "../components/contentArea";
 import ScrollToTop from "../components/scrollButton";
 
 const AddListing = () => {
-  const { authToken, isAuthenticated, login, logout } = useContext(AuthContext);
+  const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleAlertClose = () => {

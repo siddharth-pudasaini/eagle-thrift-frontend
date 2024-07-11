@@ -19,6 +19,8 @@ export default function SimplePersistentDrawer() {
 
   const { drawerOpen, toggleDrawer } = useContext(UIContext);
 
+  
+
   return (
     <Drawer
       sx={{

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import {
   Container,
   Typography,
@@ -14,6 +14,8 @@ import {
 
 import MediaCard from "./mediaCard";
 
+import { AuthContext } from "../providers/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function AccountInfo() {
   const [isEditing, setIsEditing] = useState(false);
@@ -23,6 +25,9 @@ export default function AccountInfo() {
     bio: "A description of this user.",
     avatar: "/path/to/profile.jpg",
   });
+  const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
+
   const [updatedInfo, setUpdatedInfo] = useState(userInfo);
   const fileInputRef = useRef(null);
 
@@ -65,6 +70,7 @@ export default function AccountInfo() {
     fileInputRef.current.click();
   };
 
+  
   return (
     <Container component="main" sx={{ mt: "3vh", mb: "3vh" }}>
       <Typography
@@ -245,6 +251,7 @@ export default function AccountInfo() {
           variant="contained"
           color="primary"
           sx={{ textTransform: "none", fontSize: "1.25rem" }}
+          onClick={logout}
         >
           Log Out
         </Button>

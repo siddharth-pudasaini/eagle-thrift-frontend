@@ -101,7 +101,7 @@ export default function MediaCard({ media, title, dateListed, description }) {
       }}
     >
       <Button onClick={swipeLeft}>
-        <ArrowBackIcon  />
+        <ArrowBackIcon sx={{ opacity: 2 }} />
       </Button>
 
       <CardMedia
@@ -113,12 +113,11 @@ export default function MediaCard({ media, title, dateListed, description }) {
           width: "80%",
           height: "100%",
           objectFit: "fill",
-    
         }}
       />
 
       <Button onClick={swipeRight}>
-        <ArrowForwardIcon  />
+        <ArrowForwardIcon />
       </Button>
     </Container>
   );

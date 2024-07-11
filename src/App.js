@@ -8,28 +8,31 @@ import AccountInfo from "./pages/account";
 
 import { AuthProvider } from "./providers/AuthProvider";
 import { UIProvider } from "./providers/UIprovider";
+import { MessageProvider } from "./providers/MessageProvider";
 
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./index.css";
 
 function App() {
   return (
-    <AuthProvider>
-      <UIProvider>
-        <Router>
-          <Routes>
-            <Route path="/signIn" excat element={<SignInPage />} />
-            <Route path="/signUp" element={<SignUp />} />
-            <Route path="/add-listing" excat element={<AddListing />} />
-            <Route path="/search" excat element={<Search />} />
-            <Route path="/account-info" excat element={<AccountInfo />} />
-            <Route path="/" excat element={<Home />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Router>
-      </UIProvider>
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <UIProvider>
+          <MessageProvider>
+            <Routes>
+              <Route path="/signIn" excat element={<SignInPage />} />
+              <Route path="/signUp" element={<SignUp />} />
+              <Route path="/add-listing" excat element={<AddListing />} />
+              <Route path="/search" excat element={<Search />} />
+              <Route path="/account-info" excat element={<AccountInfo />} />
+              <Route path="/" excat element={<Home />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </MessageProvider>
+        </UIProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

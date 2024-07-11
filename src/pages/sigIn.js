@@ -49,7 +49,7 @@ export default function SignIn() {
     } else if (password.length === 0) {
       setPasswordError({ status: true, message: "Password is required" });
     } else {
-      login("This is a token");
+      login(email,password);
     }
   };
 
