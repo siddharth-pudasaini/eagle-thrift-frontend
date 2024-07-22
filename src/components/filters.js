@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Stack,
@@ -11,45 +11,57 @@ import {
   ListItemText,
   OutlinedInput,
 } from "@mui/material";
-import { UIContext } from "../providers/UIprovider";
+import axios from "axios";
 
-const categories = [
-  "All",
-  "Category 1",
-  "Category 2",
-  "Category 3",
-  "Category 4",
-];
-
-export default function Filters() {
-  const [open, setOpen] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState(["All"]);
-  const [sortOrder, setSortOrder] = useState("newest");
-
-  const { drawerOpen } = useContext(UIContext);
+const Filters = ({ selectedCategoryIds, sortOrder, onFilterChange }) => {
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    const savedOpenState = sessionStorage.getItem("drawerOpen");
-    if (savedOpenState === "true") {
-      setOpen(true);
-    }
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/categories"
+        );
+        setCategories([{ id: 0, name: "All" }, ...response.data]);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   const handleCategoryChange = (event) => {
     const {
       target: { value },
     } = event;
-    setSelectedCategories(typeof value === "string" ? value.split(",") : value);
+
+    let updatedCategoryIds;
+    if (value.includes(0)) {
+      updatedCategoryIds = [0];
+    } else {
+      updatedCategoryIds =
+        typeof value === "string" ? value.split(",").map(Number) : value;
+      updatedCategoryIds = updatedCategoryIds.filter((id) => id !== 0);
+    }
+
+    onFilterChange({ selectedCategoryIds: updatedCategoryIds, sortOrder });
   };
 
   const handleSortChange = (event) => {
-    setSortOrder(event.target.value);
+    onFilterChange({ selectedCategoryIds, sortOrder: event.target.value });
   };
 
-  const handleDelete = (categoryToDelete) => () => {
-    setSelectedCategories((categories) =>
-      categories.filter((category) => category !== categoryToDelete)
+  const handleDelete = (categoryIdToDelete) => () => {
+    const updatedCategories = selectedCategoryIds.filter(
+      (id) => id !== categoryIdToDelete
     );
+    onFilterChange({ selectedCategoryIds: updatedCategories, sortOrder });
+  };
+
+  const getCategoryNameById = (id) => {
+    const category = categories.find((category) => category.id === id);
+    return category ? category.name : "";
   };
 
   return (
@@ -58,15 +70,19 @@ export default function Filters() {
         <InputLabel>Categories</InputLabel>
         <Select
           multiple
-          value={selectedCategories}
+          value={selectedCategoryIds}
           onChange={handleCategoryChange}
           input={<OutlinedInput label="Categories" />}
-          renderValue={(selected) => selected.join(", ")}
+          renderValue={(selected) =>
+            selected.map((id) => getCategoryNameById(id)).join(", ")
+          }
         >
           {categories.map((category) => (
-            <MenuItem key={category} value={category}>
-              <Checkbox checked={selectedCategories.indexOf(category) > -1} />
-              <ListItemText primary={category} />
+            <MenuItem key={category.id} value={category.id}>
+              <Checkbox
+                checked={selectedCategoryIds.indexOf(category.id) > -1}
+              />
+              <ListItemText primary={category.name} />
             </MenuItem>
           ))}
         </Select>
@@ -77,22 +93,26 @@ export default function Filters() {
         <Select value={sortOrder} onChange={handleSortChange} label="Sort By">
           <MenuItem value="newest">Newest to Oldest</MenuItem>
           <MenuItem value="oldest">Oldest to Newest</MenuItem>
+          <MenuItem value="price_high_to_low">Price: High to Low</MenuItem>
+          <MenuItem value="price_low_to_high">Price: Low to High</MenuItem>
         </Select>
       </FormControl>
 
-      <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap",p:'1%'}}>
-        {selectedCategories.map((category) => (
+      <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", p: "1%" }}>
+        {selectedCategoryIds.map((id) => (
           <Chip
-            key={category}
-            label={category}
-            onDelete={handleDelete(category)}
+            key={id}
+            label={getCategoryNameById(id)}
+            onDelete={id !== 0 ? handleDelete(id) : undefined}
             color="primary"
             sx={{
-              marginBottom:'1vh',
+              marginBottom: "1vh",
             }}
           />
         ))}
       </Stack>
     </Box>
   );
-}
+};
+
+export default Filters;

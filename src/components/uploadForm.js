@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import axios from "axios";
 import {
   Box,
   Button,
@@ -10,12 +11,17 @@ import {
   CardContent,
   TextField,
   Grid,
+  Alert,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 
-import AlertDialog from "./alertDialog";
+import { AuthContext } from "../providers/AuthProvider";
 
 const style = {
   position: "absolute",
@@ -30,26 +36,57 @@ const style = {
 
 export default function UploadForm() {
   const [files, setFiles] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("success");
+  const [categories, setCategories] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const { authToken } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/categories"
+        );
+        setCategories(response.data);
+      } catch (error) {
+        setAlertOpen(true);
+        setAlertMessage("Error fetching categories.");
+        setAlertType("error");
+      }
+    };
+
+    fetchCategories();
+  }, [authToken]);
 
   const handleFileChange = (event) => {
     const newFiles = Array.from(event.target.files);
-    const lastFile = newFiles[newFiles.length - 1];
-    const maxSizeInBytes = 1 * 1024 * 1024; // 1 MB in bytes
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5 MB in bytes
+    const allowedExtensions = ["png", "jpg", "jpeg"];
 
-    if (lastFile.size > maxSizeInBytes) {
-      setAlertOpen(true);
-      setAlertMessage("File size exeeds 1MB limit");
-    } else {
-      setFiles((prevFiles) => [...prevFiles, lastFile]);
-    }
+    const validFiles = newFiles.filter((file) => {
+      const fileExtension = file.name.split(".").pop().toLowerCase();
+      if (!allowedExtensions.includes(fileExtension)) {
+        setAlertOpen(true);
+        setAlertMessage("Only PNG, JPG, and JPEG files are allowed.");
+        setAlertType("error");
+        return false;
+      } else if (file.size > maxSizeInBytes) {
+        setAlertOpen(true);
+        setAlertMessage("File size exceeds 5MB limit.");
+        setAlertType("error");
+        return false;
+      }
+      return true;
+    });
 
+    setFiles((prevFiles) => [...prevFiles, ...validFiles]);
     event.target.value = null; // Reset the input value to allow the same file to be uploaded again
   };
 
@@ -57,13 +94,13 @@ export default function UploadForm() {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  const handleClick = (file) => {
+  const handleClickFile = (file) => {
     setSelectedFile(file);
-    setOpen(true);
+    setIsModalOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
     setSelectedFile(null);
   };
 
@@ -72,12 +109,78 @@ export default function UploadForm() {
     setDescription("");
     setPrice("");
     setFiles([]);
+    setSelectedCategoryId("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle form submission logic here
-    console.log({ title, description, price, files });
+
+    if (!title.trim()) {
+      setAlertOpen(true);
+      setAlertMessage("Title is required.");
+      setAlertType("error");
+      return;
+    }
+
+    if (!description.trim()) {
+      setAlertOpen(true);
+      setAlertMessage("Description is required.");
+      setAlertType("error");
+      return;
+    }
+
+    if (!price.trim() || isNaN(price) || parseFloat(price) <= 0) {
+      setAlertOpen(true);
+      setAlertMessage("Valid price is required.");
+      setAlertType("error");
+      return;
+    }
+
+    if (files.length === 0) {
+      setAlertOpen(true);
+      setAlertMessage("Please upload at least one file.");
+      setAlertType("error");
+      return;
+    }
+
+    if (!selectedCategoryId) {
+      setAlertOpen(true);
+      setAlertMessage("Please select a category.");
+      setAlertType("error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("category", selectedCategoryId);
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/listing",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      setAlertOpen(true);
+      setAlertMessage("Listing created successfully.");
+      setAlertType("success");
+      handleClearAll();
+    } catch (error) {
+      setAlertOpen(true);
+      setAlertMessage(
+        `Error creating listing: ${error.response.data.detail}. Please sign out and sign in again`
+      );
+      setAlertType("error");
+    }
   };
 
   const handleAlertClose = () => {
@@ -86,8 +189,17 @@ export default function UploadForm() {
   };
 
   return (
-    <Box sx={{ p: 3}}>
-      <h3 gutterBottom>Create Listing</h3>
+    <Box sx={{ p: 3 }}>
+      <h3>Create Listing</h3>
+      {alertOpen && (
+        <Alert
+          severity={alertType}
+          onClose={handleAlertClose}
+          sx={{ marginBottom: "3vh" }}
+        >
+          {alertMessage}
+        </Alert>
+      )}
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
@@ -107,8 +219,8 @@ export default function UploadForm() {
             variant="outlined"
             multiline
             rows={4}
-            inputProps={{ maxLength: 5000 }}
-            helperText={`${description.length}/5000 characters`}
+            inputProps={{ maxLength: 2000 }}
+            helperText={`${description.length}/2000 characters`}
           />
         </Grid>
         <Grid item xs={12}>
@@ -121,6 +233,27 @@ export default function UploadForm() {
             type="number"
           />
         </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth variant="outlined">
+            <InputLabel id="category-label">Category</InputLabel>
+            <Select
+              labelId="category-label"
+              id="category"
+              value={selectedCategoryId}
+              onChange={(e) => setSelectedCategoryId(e.target.value)}
+              label="Category"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {categories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
       </Grid>
       <Button
         variant="contained"
@@ -132,7 +265,7 @@ export default function UploadForm() {
         <input
           type="file"
           hidden
-          accept="image/*,video/*"
+          accept="image/png, image/jpg, image/jpeg"
           multiple
           onChange={handleFileChange}
         />
@@ -146,7 +279,7 @@ export default function UploadForm() {
               src={URL.createObjectURL(file)}
               title={file.name}
               controls={file.type.startsWith("video")}
-              onClick={() => handleClick(file)}
+              onClick={() => handleClickFile(file)}
             />
             <IconButton
               sx={{
@@ -181,7 +314,7 @@ export default function UploadForm() {
           Clear All
         </Button>
       </Box>
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={isModalOpen} onClose={closeModal}>
         <Box
           sx={{ ...style, width: "auto", maxWidth: "90%", maxHeight: "90%" }}
         >
@@ -193,7 +326,7 @@ export default function UploadForm() {
               color: "white",
               bgcolor: "rgba(0, 0, 0, 0.5)",
             }}
-            onClick={handleClose}
+            onClick={closeModal}
           >
             <CloseIcon />
           </IconButton>
@@ -212,12 +345,6 @@ export default function UploadForm() {
           )}
         </Box>
       </Modal>
-      <AlertDialog
-        open={alertOpen}
-        message={alertMessage}
-        title="File Size Error"
-        onClose={handleAlertClose}
-      />
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   Container,
   Typography,
@@ -12,24 +12,43 @@ import {
   Box,
 } from "@mui/material";
 
-import MediaCard from "./mediaCard";
-
 import { AuthContext } from "../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import ListingCard from "./userListingCard"; // Import the ListingCard component
+import axios from "axios";
 
 export default function AccountInfo() {
   const [isEditing, setIsEditing] = useState(false);
+  const { logout, username, userEmail, userId } = useContext(AuthContext); // Ensure userId is provided by AuthContext
   const [userInfo, setUserInfo] = useState({
-    name: "Name of the User",
-    email: "name@domain.com",
-    bio: "A description of this user.",
-    avatar: "/path/to/profile.jpg",
+    name: username,
+    email: userEmail,
+    avatar: `localhost:8000/uploads/profiles/${userId}/user_image`,
   });
+  const [listings, setListings] = useState([]);
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
 
   const [updatedInfo, setUpdatedInfo] = useState(userInfo);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      if (!userId) {
+        console.error("User ID is not defined.");
+        return;
+      }
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/listings/user/${parseInt(userId)}`
+        );
+        setListings(response.data);
+      } catch (error) {
+        console.error("Error fetching listings:", error);
+      }
+    };
+
+    fetchListings();
+  }, [userId]);
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
@@ -70,7 +89,6 @@ export default function AccountInfo() {
     fileInputRef.current.click();
   };
 
-  
   return (
     <Container component="main" sx={{ mt: "3vh", mb: "3vh" }}>
       <Typography
@@ -134,28 +152,10 @@ export default function AccountInfo() {
                   name="email"
                   value={updatedInfo.email}
                   onChange={handleChange}
+                  disabled // Disable email text field in editing mode
                 />
               ) : (
                 userInfo.email
-              )
-            }
-          />
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <ListItemText
-            primary="Bio"
-            secondary={
-              isEditing ? (
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  name="bio"
-                  value={updatedInfo.bio}
-                  onChange={handleChange}
-                />
-              ) : (
-                userInfo.bio
               )
             }
           />
@@ -189,47 +189,29 @@ export default function AccountInfo() {
         sx={{
           display: "flex",
           overflowX: "scroll",
-          padding: 2, // General style for the whole scrollbar area
+          padding: 2,
           "&::-webkit-scrollbar": {
-            width: "10px", // Width of the vertical scrollbar
-            height: "8px", // Height of the horizontal scrollbar
+            width: "10px",
+            height: "8px",
           },
-
-          // Style for the track of the scrollbar
           "&::-webkit-scrollbar-track": {
-            background: "#f1f1f1", // Light grey background for the track
-            borderRadius: "10px", // Rounded corners for the track
+            background: "#f1f1f1",
+            borderRadius: "10px",
           },
-
-          // Style for the thumb of the scrollbar (draggable part)
           "&::-webkit-scrollbar-thumb": {
-            background: "#888", // Darker shade for the thumb for contrast
-            borderRadius: "10px", // Rounded corners for the thumb
-            border: "2px solid transparent", // Optional: Adding border can make thumb stand out
-            backgroundClip: "content-box", // Ensures the border does not take space inside the thumb
+            background: "#888",
+            borderRadius: "10px",
+            border: "2px solid transparent",
+            backgroundClip: "content-box",
           },
-
-          // Optional: Style for the thumb on hover or active state
           "&::-webkit-scrollbar-thumb:hover": {
-            background: "#555", // Slightly darker on hover for visual feedback
+            background: "#555",
           },
         }}
       >
-        {Array(100)
-          .fill("https://picsum.photos/400")
-          .map((src, index) => (
-            <img
-              key={index}
-              src={src}
-              alt={`Listing ${index}`}
-              style={{
-                width: 100,
-                height: 100,
-                marginRight: 8,
-                objectFit: "cover",
-              }}
-            />
-          ))}
+        {listings.map((listing) => (
+          <ListingCard key={listing.id} listing={listing} />
+        ))}
       </Box>
       <Box
         sx={{

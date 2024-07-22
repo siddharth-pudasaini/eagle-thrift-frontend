@@ -1,117 +1,68 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Box,useMediaQuery } from "@mui/material";
 import MediaCard from "./mediaCard";
-import { Box } from "@mui/material";
 
-const ListingsContainer = () => {
+
+const ListingsContainer = ({ selectedCategoryIds, sortOrder }) => {
+  const [listings, setListings] = useState([]);
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const params = new URLSearchParams();
+        selectedCategoryIds.forEach((id) => params.append("categories", id));
+        params.append("sort_order", sortOrder);
+
+        const response = await axios.get("http://127.0.0.1:8000/api/listings", {
+          params,
+        });
+        setListings(response.data);
+      } catch (error) {
+        console.error("Error fetching listings:", error);
+      }
+    };
+
+    fetchListings();
+  }, [selectedCategoryIds, sortOrder]);
+
+  const getReadableDate = (date) => {
+    const cleanDateString = date.replace(/\.\d+/, "");
+    return new Date(cleanDateString).toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    });
+  };
+
   return (
     <Box
       sx={{
         display: "flex",
         width: "100%",
-        justifyContent: "center",
+        justifyContent:isMobile?"center":'flex-start',
         flexWrap: "wrap",
         gap: "2%",
       }}
     >
-      <MediaCard
-        media={[
-          { image: "https://picsum.photos/400" },
-          { image: "https://picsum.photos/401" },
-          { image: "https://picsum.photos/402" },
-        ]}
-        title="Item for sale"
-        dateListed="June 28, 2024"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      />
-      <MediaCard
-        media={[
-          { image: "https://picsum.photos/400" },
-          { image: "https://picsum.photos/401" },
-          { image: "https://picsum.photos/402" },
-        ]}
-        title="Item for sale"
-        dateListed="June 28, 2024"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      />
-      <MediaCard
-        media={[
-          { image: "https://picsum.photos/400" },
-          { image: "https://picsum.photos/401" },
-          { image: "https://picsum.photos/402" },
-        ]}
-        title="Item for sale"
-        dateListed="June 28, 2024"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      />
-      <MediaCard
-        media={[
-          { image: "https://picsum.photos/400" },
-          { image: "https://picsum.photos/401" },
-          { image: "https://picsum.photos/402" },
-        ]}
-        title="Item for sale"
-        dateListed="June 28, 2024"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      />
-      <MediaCard
-        media={[
-          { image: "https://picsum.photos/400" },
-          { image: "https://picsum.photos/401" },
-          { image: "https://picsum.photos/402" },
-        ]}
-        title="Item for sale"
-        dateListed="June 28, 2024"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      />
-      <MediaCard
-        media={[
-          { image: "https://picsum.photos/400" },
-          { image: "https://picsum.photos/401" },
-          { image: "https://picsum.photos/402" },
-        ]}
-        title="Item for sale"
-        dateListed="June 28, 2024"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      />
-      <MediaCard
-        media={[
-          { image: "https://picsum.photos/400" },
-          { image: "https://picsum.photos/401" },
-          { image: "https://picsum.photos/402" },
-        ]}
-        title="Item for sale"
-        dateListed="June 28, 2024"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      />
-      <MediaCard
-        media={[
-          { image: "https://picsum.photos/400" },
-          { image: "https://picsum.photos/401" },
-          { image: "https://picsum.photos/402" },
-        ]}
-        title="Item for sale"
-        dateListed="June 28, 2024"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      />
-      <MediaCard
-        media={[
-          { image: "https://picsum.photos/400" },
-          { image: "https://picsum.photos/401" },
-          { image: "https://picsum.photos/402" },
-        ]}
-        title="Item for sale"
-        dateListed="June 28, 2024"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      />
-      <MediaCard
-        media={[
-          { image: "https://picsum.photos/400" },
-          { image: "https://picsum.photos/401" },
-          { image: "https://picsum.photos/402" },
-        ]}
-        title="Item for sale"
-        dateListed="June 28, 2024"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      />
+      {listings.map((listing) => (
+        <MediaCard
+          key={listing.id}
+          media={
+            listing.images && listing.images.length > 0
+              ? listing.images.map((image) => ({ image }))
+              : [{ image: "https://via.placeholder.com/150" }]
+          }
+          title={listing.title}
+          dateListed={getReadableDate(listing.created_at)}
+          description={listing.description}
+          price={listing.price}
+          listingId={listing.id}
+
+        />
+      ))}
     </Box>
   );
 };

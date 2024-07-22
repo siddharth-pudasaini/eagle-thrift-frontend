@@ -15,7 +15,7 @@ import { useState } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 
 export default function SignIn() {
-  const { authToken, isAuthenticated, login, logout } = useContext(AuthContext);
+  const { login} = useContext(AuthContext);
 
   const [emailError, setEmailError] = useState({ status: false, message: "" });
   const [passwordError, setPasswordError] = useState({
@@ -71,7 +71,10 @@ export default function SignIn() {
             width: "12rem",
           }}
         >
-          <img src="./logo192.png" alt="Eagle Thrift Logo"></img>
+          <img
+            src={`${process.env.PUBLIC_URL}/logo192.png`}
+            alt="Eagle Thrift Logo"
+          ></img>
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign in

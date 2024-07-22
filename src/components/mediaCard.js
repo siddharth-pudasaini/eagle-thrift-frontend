@@ -1,126 +1,55 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
-  CardMedia,
-  useMediaQuery,
-  Button,
-  Container,
-  Box,
+  CardHeader,
   Typography,
+  Box,
+  Button,
   IconButton,
+  useMediaQuery,
+  Container,
 } from "@mui/material";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import CircleIcon from "@mui/icons-material/Circle";
-import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
-import CardHeader from "@mui/material/CardHeader";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useNavigate } from "react-router-dom";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import carousel styles
 import MessageIcon from "@mui/icons-material/Message";
 
-export default function MediaCard({ media, title, dateListed, description }) {
+export default function MediaCard({
+  price,
+  media,
+  title,
+  dateListed,
+  description,
+  listingId,
+}) {
   const isMobile = useMediaQuery("(max-width: 600px)");
-  const totalImages = media.length;
-  const [activeImage, setActiveImage] = useState(0);
-
-  const swipeLeft = (e) => {
-    e.preventDefault();
-    if (activeImage !== 0) {
-      setActiveImage((prev) => prev - 1);
-    }
-  };
-
-  const swipeRight = (e) => {
-    e.preventDefault();
-    if (activeImage !== totalImages - 1) {
-      setActiveImage((prev) => prev + 1);
-    }
-  };
-
-  const SelectedItem = () => (
-    <Box
-      sx={{
-        width: "100%",
-        margin: "1%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {media.map((item, index) =>
-        index === activeImage ? (
-          <CircleIcon
-            key={index}
-            color="secondary"
-            fontSize="small"
-            sx={{ margin: "5%" }}
-          />
-        ) : (
-          <CircleOutlinedIcon
-            fontSize="small"
-            key={index}
-            color="secondary"
-            sx={{ margin: "5%" }}
-          />
-        )
-      )}
-    </Box>
-  );
+  const navigate = useNavigate();
 
   const ItemMenu = () => {
     return (
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
           alignItems: "center",
-          width: isMobile ? "70%" : "50%",
+          width: "90%",
           padding: "1%",
         }}
       >
-        <IconButton>
-          <FavoriteIcon color="secondary" />
-        </IconButton>
-        <IconButton>
+        <IconButton onClick={() => navigate(`/messages/${listingId}`)}>
           <MessageIcon color="primary" />
         </IconButton>
-        <Button variant="outlined" color="primary">
+
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => navigate(`/listing/${listingId}`)}
+        >
           View Listing
         </Button>
       </Box>
     );
   };
-
-  const ImagesWithButtons = () => (
-    <Container
-      sx={{
-        position: "relative",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-      }}
-    >
-      <Button onClick={swipeLeft}>
-        <ArrowBackIcon sx={{ opacity: 2 }} />
-      </Button>
-
-      <CardMedia
-        key={activeImage}
-        component="img"
-        image={media[activeImage].image}
-        alt={title}
-        sx={{
-          width: "80%",
-          height: "100%",
-          objectFit: "fill",
-        }}
-      />
-
-      <Button onClick={swipeRight}>
-        <ArrowForwardIcon />
-      </Button>
-    </Container>
-  );
 
   return (
     <Card
@@ -128,15 +57,48 @@ export default function MediaCard({ media, title, dateListed, description }) {
       elevation={5}
       sx={{
         width: isMobile ? "90%" : "30%",
-        minHeight: isMobile ? "45vw" : "25vw",
+        minHeight: isMobile ? "45vw" : "10vw",
         margin: "1%",
       }}
     >
       <CardHeader title={title} subheader={dateListed} />
-      {ImagesWithButtons()}
-      {SelectedItem()}
+      <Container
+        sx={{
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: isMobile ? "45vw" : "25vw", // Fixed height
+        }}
+      >
+        <Carousel
+          showThumbs={false}
+          showStatus={false}
+          infiniteLoop={true}
+          useKeyboardArrows={true}
+        >
+          {media.map((item, index) => (
+            <div key={index}>
+              <img
+                src={item.image}
+                alt={`Listing image ${index}`}
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              />
+            </div>
+          ))}
+        </Carousel>
+      </Container>
+      <Typography
+        sx={{
+          margin: "1vh",
+          color: "primary.main",
+          fontWeight: "bold",
+        }}
+      >
+        Price: {price}
+      </Typography>
       {ItemMenu()}
-
       <Typography
         variant="body1"
         color="textSecondary"

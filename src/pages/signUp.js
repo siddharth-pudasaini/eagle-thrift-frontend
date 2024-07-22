@@ -9,16 +9,28 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useState } from "react";
+import axios from "axios";
+import { Alert } from "@mui/material";
 
 export default function SignUp() {
   const [emailError, setEmailError] = useState({ status: false, message: "" });
   const [passwordError, setPasswordError] = useState({
-    status: false, message: ""
+    status: false,
+    message: "",
   });
-  const [firstNameError, setFirstNameError] = useState({ status: false, message: "" });
-  const [lastNameError, setLastNameError] = useState({ status: false, message: "" });
-  const [dobError, setDobError] = useState({ status: false, message: "" });
-  const [untIdError, setUntIdError] = useState({ status: false, message: "" });
+  const [confirmPasswordError, setConfirmPasswordError] = useState({
+    status: false,
+    message: "",
+  });
+  const [usernameError, setUsernameError] = useState({
+    status: false,
+    message: "",
+  });
+
+  const [signUpData, setSignUpData] = useState({
+    status: null,
+    message: null,
+  });
 
   const handleTextChange = (event) => {
     const { name } = event.target;
@@ -26,51 +38,70 @@ export default function SignUp() {
       setEmailError({ status: false, message: "" });
     } else if (name === "password") {
       setPasswordError({ status: false, message: "" });
-    } else if (name === "firstName") {
-      setFirstNameError({ status: false, message: "" });
-    } else if (name === "lastName") {
-      setLastNameError({ status: false, message: "" });
-    } else if (name === "dob") {
-      setDobError({ status: false, message: "" });
-    } else if (name === "untId") {
-      setUntIdError({ status: false, message: "" });
+    } else if (name === "confirmPassword") {
+      setConfirmPasswordError({ status: false, message: "" });
+    } else if (name === "username") {
+      setUsernameError({ status: false, message: "" });
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     let email = data.get("email");
     let password = data.get("password");
-    let firstName = data.get("firstName");
-    let lastName = data.get("lastName");
-    let dob = data.get("dob");
-    let untId = data.get("untId");
+    let confirmPassword = data.get("confirmPassword");
+    let username = data.get("username");
 
     email = email.trim();
     password = password.trim();
-    firstName = firstName.trim();
-    lastName = lastName.trim();
-    dob = dob.trim();
-    untId = untId.trim();
+    confirmPassword = confirmPassword.trim();
+    username = username.trim();
 
-    if (firstName.length === 0) {
-      setFirstNameError({ status: true, message: "First name is required" });
-    }
-    if (lastName.length === 0) {
-      setLastNameError({ status: true, message: "Last name is required" });
-    }
-    if (dob.length === 0) {
-      setDobError({ status: true, message: "Date of birth is required" });
-    }
-    if (untId.length === 0) {
-      setUntIdError({ status: true, message: "UNT ID is required" });
-    }
-    if (email.length === 0) {
+    if (username.length === 0) {
+      setUsernameError({ status: true, message: "Username is required" });
+    } else if (email.length === 0) {
       setEmailError({ status: true, message: "Email is required" });
-    }
-    if (password.length === 0) {
+    } else if (password.length === 0) {
       setPasswordError({ status: true, message: "Password is required" });
+    } else if (confirmPassword.length === 0) {
+      setConfirmPasswordError({
+        status: true,
+        message: "Confirm Password is required",
+      });
+    } else if (password.length < 8) {
+      setPasswordError({
+        status: true,
+        message: "Password should be at least 8 characters long",
+      });
+    } else if (password !== confirmPassword) {
+      setConfirmPasswordError({
+        status: true,
+        message: "Passwords do not match",
+      });
+    } else {
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/api/user/register",
+          {
+            username: `${username}`,
+            email: `${email}`,
+            password: `${password}`,
+          }
+        );
+        if (response.status === 200) {
+          setSignUpData({
+            status: "success",
+            message: "User was registered successfully. ",
+          });
+          event.target.reset();
+        }
+      } catch (error) {
+        setSignUpData({
+          status: "error",
+          message: error.response.data.detail || "Registration failed",
+        });
+      }
     }
   };
 
@@ -79,69 +110,54 @@ export default function SignUp() {
       <Box
         sx={{
           marginTop: 8,
-          marginBottom:10,
+          marginBottom: 10,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "primary.main", height: "12rem", width: "12rem" }}>
-          <img src="./logo192.png" alt="Logo of Eagle over Cart" />
+        <Avatar
+          sx={{
+            m: 1,
+            bgcolor: "primary.main",
+            height: "12rem",
+            width: "12rem",
+          }}
+        >
+          <img src={`${process.env.PUBLIC_URL}/logo192.png`} alt="Logo" />
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
+        {signUpData.status && (
+          <Alert severity={signUpData.status}>
+            {signUpData.message}
+            {signUpData.status === "success" && (
+              <Link
+                component={RouterLink}
+                to="/signin"
+                variant="body2"
+                color="secondary.main"
+              >
+                {" Sign In"}
+              </Link>
+            )}
+          </Alert>
+        )}
+
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
-            id="firstName"
-            label="First Name"
-            name="firstName"
-            autoComplete="given-name"
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
             autoFocus
-            error={firstNameError.status}
-            helperText={firstNameError.message}
-            onClick={handleTextChange}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="lastName"
-            label="Last Name"
-            name="lastName"
-            autoComplete="family-name"
-            error={lastNameError.status}
-            helperText={lastNameError.message}
-            onClick={handleTextChange}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="dob"
-            label="Date of Birth"
-            name="dob"
-            type="date"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            error={dobError.status}
-            helperText={dobError.message}
-            onClick={handleTextChange}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="untId"
-            label="UNT ID"
-            name="untId"
-            error={untIdError.status}
-            helperText={untIdError.message}
-            onClick={handleTextChange}
+            error={usernameError.status}
+            helperText={usernameError.message}
+            onChange={handleTextChange}
           />
           <TextField
             margin="normal"
@@ -153,7 +169,7 @@ export default function SignUp() {
             autoComplete="email"
             error={emailError.status}
             helperText={emailError.message}
-            onClick={handleTextChange}
+            onChange={handleTextChange}
           />
           <TextField
             margin="normal"
@@ -165,14 +181,36 @@ export default function SignUp() {
             id="password"
             error={passwordError.status}
             helperText={passwordError.message}
-            onClick={handleTextChange}
+            onChange={handleTextChange}
           />
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            id="confirmPassword"
+            error={confirmPasswordError.status}
+            helperText={confirmPasswordError.message}
+            onChange={handleTextChange}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
             Sign Up
           </Button>
           <Grid container>
             <Grid item>
-              <Link component={RouterLink} to="/signin" variant="body2" color="secondary.main">
+              <Link
+                component={RouterLink}
+                to="/signin"
+                variant="body2"
+                color="secondary.main"
+              >
                 {"Already have an account? Sign In"}
               </Link>
             </Grid>

@@ -5,7 +5,6 @@ import React, {
   useState,
   useContext,
 } from "react";
-
 import { AuthContext } from "./AuthProvider";
 
 const MessageContext = createContext();
@@ -24,27 +23,47 @@ const MessageProvider = ({ children }) => {
       };
 
       socket.current.onmessage = (event) => {
-        const message = event.data;
-        setMessages((prevMessages) => [...prevMessages, message]);
+        const message = JSON.parse(event.data);
+        setMessages((prevMessages) => {
+          const filteredMessages = prevMessages.filter(
+            (msg) => msg.conversation_id !== message.conversation_id
+          );
+          return [...filteredMessages, message];
+        });
       };
 
-      socket.current.onclose = () => {
-        console.log("WebSocket connection closed");
+      socket.current.onclose = (event) => {
+        if (event.wasClean) {
+          console.log(
+            `WebSocket closed cleanly, code=${event.code} reason=${event.reason}`
+          );
+        } else {
+          console.error("WebSocket connection closed unexpectedly");
+        }
+      };
+
+      socket.current.onerror = (error) => {
+        console.error("WebSocket error", error);
       };
 
       return () => {
-        socket.current.close();
+        if (socket.current) {
+          socket.current.close();
+        }
       };
     }
   }, [isAuthenticated, authToken]);
 
-  const sendMessage = (message, receiver) => {
+  const sendMessage = (message, listingId) => {
     if (socket.current && socket.current.readyState === WebSocket.OPEN) {
       const messageData = {
         message: message,
-        receiver: receiver,
+        listing_id: listingId,
+        token: authToken,
       };
       socket.current.send(JSON.stringify(messageData));
+    } else {
+      console.error("WebSocket connection is not open");
     }
   };
 
